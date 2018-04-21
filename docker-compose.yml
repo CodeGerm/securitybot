@@ -24,7 +24,7 @@ services:
       - DB_NAME=securitybot
   frontend:
     build: .
-    image: securitybot
+    image: centrifybot
     command: frontend
     ports:
       - "8888:8888"
