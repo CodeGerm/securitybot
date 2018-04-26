@@ -16,7 +16,8 @@ DUO_INTEGRATION = getenv('DUO_INTEGRATION_KEY', 'duo_integration_key')
 DUO_SECRET = getenv('DUO_SECRET_KEY', 'duo_secret_key')
 DUO_ENDPOINT = getenv('DUO_ENDPOINT', 'duo_endpoint')
 REPORTING_CHANNEL = getenv('REPORTING_CHANNEL', 'some_slack_channel_id')
-ICON_URL = 'https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-12-07/113269613041_dfc5b7cb41ffd17b494d_48.png'
+BOT_NAME = getenv('BOT_NAME', 'SecurityBot')
+BOT_ICON_URL = getenv('BOT_ICON_URL', 'https://colerisetemp2.files.wordpress.com/2009/11/dock-icon-flat.png')
 
 def init():
     # Setup logging
@@ -37,7 +38,7 @@ def main():
     # )
     # duo_builder = lambda name: DuoAuth(duo_api, name)
     default_builder = lambda name: DefaultAuth(name)
-    chat = Slack('YanlinBot', SLACK_KEY, ICON_URL)
+    chat = Slack(BOT_NAME, SLACK_KEY, BOT_ICON_URL)
     tasker = SQLTasker()
 
     sb = SecurityBot(chat, tasker, default_builder, REPORTING_CHANNEL, 'config/bot.yaml')
