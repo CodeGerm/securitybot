@@ -296,7 +296,7 @@ def blacklist(**kwargs):
     return response
 
 # Custom alert creation
-def create_alert(ldap, title, description, reason):
+def create_alert(ldap, title, description, reason, attachments=None):
     # type: (str, str, str, str) -> Dict[str, Any]
     '''
     Creates a new alert.
@@ -307,10 +307,16 @@ def create_alert(ldap, title, description, reason):
         reason: The reason for creating the alert
     Content:
         Empty.
+        :param user:
+        :param alert_time:
+        :param location:
+        :param target:
+        :param source:
+        :param risk:
     '''
     response = build_response()
     try:
-        create_new_alert(title, ldap, description, reason)
+        create_new_alert(title, ldap, description, reason, url='N/A', key=None, attachments=attachments)
     except SQLEngineException:
         response['error'] = 'Invalid parameters'
         return response

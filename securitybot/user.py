@@ -6,6 +6,7 @@ __author__ = 'Alex Bertsch'
 __email__ = 'abertsch@dropbox.com'
 
 import logging
+import json
 import pytz
 from datetime import datetime, timedelta
 import securitybot.ignored_alerts as ignored_alerts
@@ -242,14 +243,23 @@ class User(object):
                 comment = self._last_message.text
             else:
                 comment = 'No comment provided.'
-            comment = '\n'.join('> ' + s for s in comment.split('\n'))
+           # comment = '\n'.join('> ' + s for s in comment.split('\n'))
+            msg =''
+            msg_att = self.parent.messages['report'].format(username=self['name'],
+                                                        title=self.pending_task.title,
+                                                        comment=comment)
+            msg_att += ',\n'
+            msg_att +=  self.pending_task.attachments
+            msg_att += ',\n'
+            msg_att += self.pending_task.reason
+            msg_att  = '[ \n' + msg_att + '\n ]'
+
+            #print(msg_att)
+            msg_att_json = json.loads(msg_att)
             self.parent.chat.send_message(
                 self.parent.reporting_channel,
-                self.parent.messages['report'].format(username=self['name'],
-                                                      title=self.pending_task.title,
-                                                      description=self.pending_task.description,
-                                                      comment=comment,
-                                                      url=self.pending_task.url))
+                msg,
+                msg_att_json)
 
 
     # Exit actions

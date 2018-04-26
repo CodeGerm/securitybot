@@ -14,6 +14,7 @@ SELECT HEX(alerts.hash),
        reason,
        description,
        url,
+       attachments,
        performed,
        comment,
        authenticated,
@@ -67,14 +68,14 @@ WHERE hash=UNHEX(%s)
 
 class SQLTask(Task):
     def __init__(self, hsh, title, username, reason, description, url,
-                 performed, comment, authenticated, status):
+                 attachments, performed, comment, authenticated, status):
         # type: (str, str, str, str, str, str, bool, str, bool, int) -> None
         '''
         Args:
             hsh (str): SHA256 primary key hash.
         '''
         super(SQLTask, self).__init__(title, username, reason, description, url,
-                                   performed, comment, authenticated, status)
+                                      attachments, performed, comment, authenticated, status)
         self.hash = hsh
 
     def _set_status(self, status):

@@ -13,6 +13,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.netutil
 import tornado.web
+import json
 
 # Securitybot includes
 import securitybot_api as api
@@ -73,17 +74,37 @@ class NewAlertHandler(tornado.web.RequestHandler):
     def post(self):
         response = api.build_response()
         args = {}
-        for name in ['title', 'ldap', 'description', 'reason']:
+        for name in ['title', 'ldap', 'description', 'reason', 'attachments']:
             args[name] = self.get_argument(name, default=None)
             if args[name] is None:
                 response['error'] += 'ERROR: {} must be specified!\n'.format(name)
         if all(v is not None for v in args.values()):
-            self.write(api.create_alert(args['ldap'],
-                                        args['title'],
-                                        args['description'],
-                                        args['reason']))
+            self.write(api.create_alert(args['ldap'], args['title'], args['description'], args['reason'],
+                                        args['attachments']))
         else:
             self.write(response)
+
+'''
+prompt -> description
+actions -> reason
+'''
+class NewJSONAlertHandler(tornado.web.RequestHandler):
+    def post(self):
+        response = api.build_response()
+        data = json.loads(self.request.body)
+        args = {}
+        for name in ['title', 'user', 'prompt', 'actions', 'attachments']:
+            args[name] = data.get(name, None)
+            if args[name] is None:
+                response['error'] += 'ERROR: {} must be specified!\n'.format(name)
+        if all(v is not None for v in args.values()):
+            self.write(api.create_alert(args['user'], args['title'], args['prompt'], args['actions'],
+                                        args['attachments']))
+        else:
+            self.write(response)
+
+
+
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -106,6 +127,7 @@ class SecuritybotService(object):
             (r'/api/ignored', IgnoredHandler),
             (r'/api/blacklist', BlacklistHandler),
             (r'/api/create', NewAlertHandler),
+            (r'/api/new', NewJSONAlertHandler),
         ],
         xsrf_cookie=True,
         static_path=static_path,

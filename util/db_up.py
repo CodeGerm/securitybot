@@ -59,6 +59,7 @@ CREATE TABLE alerts (
     reason TEXT NOT NULL,
     url VARCHAR(511) NOT NULL,
     event_time DATETIME NOT NULL,
+    attachments TEXT,
     PRIMARY KEY ( hash )
 )
 '''

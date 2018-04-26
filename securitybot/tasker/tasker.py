@@ -50,7 +50,7 @@ STATUS_LEVELS = enum('OPEN', 'INPROGRESS', 'VERIFICATION')
 class Task(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, title, username, reason, description, url, performed, comment,
+    def __init__(self, title, username, reason, description, url, attachments, performed, comment,
             authenticated, status):
         # type: (str, str, str, str, str, bool, str, bool, int) -> None
         '''
@@ -75,6 +75,7 @@ class Task(object):
         self.reason = reason
         self.description = description
         self.url = url
+        self.attachments = attachments
         self.performed = performed
         self.comment = comment
         self.authenticated = authenticated

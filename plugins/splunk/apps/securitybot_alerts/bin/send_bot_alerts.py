@@ -28,7 +28,7 @@ However, if this is a geniune collision, then you have a paper to write. Good lu
 '''.format(rows, hash))
 
     # Insert that into the database as a new alert
-    create_new_alert(search_name, username, description, reason, url, hash)
+    create_new_alert(search_name, username, description, reason, url, user=hash)
 
 class CollisionException(Exception):
     pass

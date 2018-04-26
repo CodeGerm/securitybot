@@ -69,27 +69,34 @@ def get_expiration_time(start, time):
         end = next_day + delta
     return end
 
-def create_new_alert(title, ldap, description, reason, url='N/A', key=None):
+def create_new_alert(title, ldap, description, reason, url='N/A', key=None, attachments=None):
     # type: (str, str, str, str, str, str) -> None
     '''
     Creates a new alert in the SQL DB with an optionally random hash.
+    :param key:
+    :param alert_time:
+    :param location:
+    :param target:
+    :param source:
+    :param risk:
     '''
+
     # Generate random key if none provided
     if key is None:
         key = binascii.hexlify(os.urandom(32))
 
     # Insert that into the database as a new alert
     SQLEngine.execute('''
-    INSERT INTO alerts (hash, ldap, title, description, reason, url, event_time)
-    VALUES (UNHEX(%s), %s, %s, %s, %s, %s, NOW())
+    INSERT INTO alerts (hash, ldap, title, description, reason, url, event_time, attachments)
+    VALUES (UNHEX(%s), %s, %s, %s, %s, %s, NOW(), %s)
     ''',
-    (key, ldap, title, description, reason, url))
+                      (key, ldap, title, description, reason, url, attachments))
 
     SQLEngine.execute('''
     INSERT INTO user_responses (hash, comment, performed, authenticated)
     VALUES (UNHEX(%s), '', false, false)
     ''',
-    (key,))
+                      (key,))
 
     SQLEngine.execute('INSERT INTO alert_status (hash, status) VALUES (UNHEX(%s), 0)',
                       (key,))

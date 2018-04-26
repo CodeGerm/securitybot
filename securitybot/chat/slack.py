@@ -6,7 +6,6 @@ __email__ = 'abertsch@dropbox.com'
 
 import logging
 from slackclient import SlackClient
-import json
 
 from securitybot.user import User
 from securitybot.chat.chat import Chat, ChatException
@@ -103,7 +102,8 @@ class Slack(Chat):
         messages = [e for e in events if e['type'] == 'message']
         return [m for m in messages if 'user' in m and m['channel'].startswith('D')]
 
-    def send_message(self, channel, message):
+
+    def send_message(self, channel, message, msg_attachments=[]):
         # type: (Any, str) -> None
         '''
         Sends some message to a desired channel.
@@ -114,12 +114,14 @@ class Slack(Chat):
                                            text=message,
                                            username=self._username,
                                            as_user=False,
-                                           icon_url=self._icon_url)
+                                           icon_url=self._icon_url,
+                                           attachments=msg_attachments)
 
-    def message_user(self, user, message):
+
+    def message_user(self, user, message,msg_attachments=[]):
         # type: (User, str) -> None
         '''
         Sends some message to a desired user, using a User object and a string message.
         '''
         channel = self._api_call('im.open', user=user['id'])['channel']['id']
-        self.send_message(channel, message)
+        self.send_message(channel, message, msg_attachments)

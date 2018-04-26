@@ -202,6 +202,8 @@ function submitCustom(form) {
   data["ldap"] = form.customLdap.value;
   data["description"] = form.customDescription.value;
   data["reason"] = form.customReason.value;
+  data["attachments"] = form.customAttachments.value;
+
 
   // Check for empty title or ldap
   let hasError = false;
@@ -217,6 +219,7 @@ function submitCustom(form) {
   } else {
     form.customLdap.parentElement.parentElement.classList.remove("has-error");
   }
+
 
   if (hasError) {
     presentAlert("alert-danger", "Please fill in the fields highlighted in red.");

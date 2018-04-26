@@ -7,8 +7,7 @@ They return True upon success and False upon failure, or just None
 if the command doesn't have success/failure messages.
 '''
 import re
-
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import securitybot.ignored_alerts as ignored_alerts
 from securitybot.util import create_new_alert
@@ -94,6 +93,8 @@ def ignore(bot, user, args):
 
 def test(bot, user, args):
     '''Creates a new test alert in Maniphest for a user.'''
-    create_new_alert('testing_alert', user['name'], 'Testing alert', 'Testing Securitybot')
+    create_new_alert('testing_alert', user['name'], 'Testing alert', 'Testing Securitybot', user=user['name'],
+                     alert_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), location='Santa Clara',
+                     target='127.0.0.1', source='127.0.0.1', risk='High')
 
     return True

@@ -4,8 +4,8 @@ services:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASS}
-    volumes:
-      - mysql-securitybot:/var/lib/mysql
+#    volumes:
+#      - mysql-securitybot:/var/lib/mysql
     ports:
       - "3306"
   bot:
@@ -24,7 +24,7 @@ services:
       - DB_NAME=securitybot
   frontend:
     build: .
-    image: centrifybot
+    image: securitybot
     command: frontend
     ports:
       - "8888:8888"

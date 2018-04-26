@@ -13,6 +13,7 @@ import pytz
 import shlex
 import yaml
 import string
+import json
 
 import securitybot.commands as bot_commands
 from securitybot.blacklist.sql_blacklist import SQLBlacklist
@@ -325,12 +326,21 @@ class SecurityBot(object):
             task (Task): A task to alert on.
         '''
         # Format the reason to be indented
-        reason = '\n'.join(['>' + s for s in task.reason.split('\n')])
+        #reason = '\n'.join(['>' + s for s in task.reason.split('\n')])
 
-        message = self.messages['alert'].format(task.description, reason)
-        message += '\n'
-        message += self.messages['action_prompt']
-        self.chat.message_user(user, message)
+        #message = self.messages['alert'].format(task.description, reason)
+        #message += '\n'
+        #message += self.messages['action_prompt']
+        message ='';
+        message_attachement = self.messages['alert']
+        message_attachement += ',\n'
+        message_attachement += task.attachments
+        message_attachement += ',\n'
+        message_attachement += self.messages['action_prompt']
+        message_attachement = '[ \n' + message_attachement + '\n ]'
+        mjson = json.loads(message_attachement)
+
+        self.chat.message_user(user, message, mjson)
 
     # User creation and lookup methods
 

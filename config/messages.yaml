@@ -20,17 +20,27 @@ bye: >
 # Message sent when alerting a user that a security action occured
 # Takes alert description and alert reason as formatting parameters 0 and 1 rsp
 alert: >
-    There's an alert, `{0}`, that's associated with your username.
 
-    Here's some more information on the alert:
+     {
+        "color": "danger",
+        "text" : "Following alert is associated with you"
+     }
 
-    {1}
 
 # Message sent when asking for user response on whether they're responsible
 action_prompt: >
-    Did you do this?
 
-    Respond with either "yes" or "no" followed by an explanation in one message.
+    {
+       "title": "Did you do this?",
+       "color": "#3AA3E3",
+       "fields": [
+        {
+          "value": "Respond with either 'yes' or 'no' followed by an explanation in one message.",
+          "short": false
+        }
+      ]
+    }
+   #Respond with either "yes" or "no" followed by an explanation in one message.
 
 # Message sent if the user is not responsible
 escalated: >
@@ -73,11 +83,18 @@ no_response: >
 
 # Message sent to report a user didn't do something.
 report: >
-    `{username}` reports they didn't do `{title}` (`{description}`):
+     {{
+        "color": "danger",
+        "text" : "`{username}` reports `{username}` didn't do following `{title}`",
+        "fields": [
+           {{
+             "title": "Comment",
+             "value": "{comment}",
+             "short": false
+           }}
+        ]
+     }}
 
-    {comment}
-
-    URL: {url}
 
 # Sent when a message is unrecognized
 bad_command: >
