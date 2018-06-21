@@ -7,10 +7,12 @@ They return True upon success and False upon failure, or just None
 if the command doesn't have success/failure messages.
 '''
 import re
+import logging
 from datetime import datetime, timedelta
-
+import json
 import securitybot.ignored_alerts as ignored_alerts
 from securitybot.util import create_new_alert
+from securitybot.analytics.analytics import list_insightlet_message, get_insightlet_id, DASHBOARD_URL
 
 def hi(bot, user, args):
     '''Says hello to a user.'''
@@ -98,3 +100,19 @@ def test(bot, user, args):
                      target='127.0.0.1', source='127.0.0.1', risk='High')
 
     return True
+
+def insightlet(bot, user, args):
+    if len(args)<1:
+        # list the insights
+        msg = list_insightlet_message()
+        msg += "Please find the insightlet id you want to run\n"
+        msg += "```insightlet id```"
+        bot.chat.message_user(user, msg)
+        return True
+    if len(args) == 1:
+        name, insightlet_url = get_insightlet_id(args[0])
+        logging.info ("insight_url = " + insightlet_url)
+        msg_att = bot.messages['insightlet'].format(title=name, url=DASHBOARD_URL, insightlet=insightlet_url)
+        msg_att_json = json.loads(msg_att)
+        bot.chat.message_user(user, '', msg_att_json)
+        return True

@@ -118,4 +118,14 @@ ignore_time: >
 
 ignore_no_time: >
     You must provide a non-zero amount of time.
+
+insightlet: >
+    [
+        {{
+            "title": "{title}",
+            "title_link": "{url}",
+            "image_url": "{insightlet}",
+            "color": "#3AA3E3"
+        }}
+    ]
 ...

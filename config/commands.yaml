@@ -57,4 +57,13 @@ test: # Generates a test alert for a user
     success_msg: 'Sending you a testing alert. Be patient...'
     failure_msg: 'I was unable to generate a testing alert. Sorry. :sadpanda:'
 
+insightlet: # Generates insightlet by name
+    info:  Generates insightlet by name
+    usage:
+       - "'insightlet (widget name)'"
+    fn: insightlet
+    success_msg: 'Done!'
+    failure_msg: 'I can not generate insightlet for you. Sorry. :sadpanda:'
+
+
 ...
