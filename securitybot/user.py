@@ -14,11 +14,12 @@ from securitybot.tasker.tasker import Task
 from securitybot.auth.auth import AUTH_STATES
 from securitybot.state_machine import StateMachine
 from securitybot.util import tuple_builder, get_expiration_time
+from os import getenv
 
 from typing import Any, Dict, List
 
 ESCALATION_TIME = timedelta(hours=2)
-SLOW_RESPONSE_TIME = timedelta(minutes=1)
+SLOW_RESPONSE_TIME = timedelta(minutes=int(getenv("SLOW_RESPONSE_TIME", '1')))
 BACKOFF_TIME = timedelta(hours=21)
 
 class User(object):
