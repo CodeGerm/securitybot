@@ -14,10 +14,12 @@ from securitybot.tasker.tasker import Task
 from securitybot.auth.auth import AUTH_STATES
 from securitybot.state_machine import StateMachine
 from securitybot.util import tuple_builder, get_expiration_time
+from os import getenv
 
 from typing import Any, Dict, List
 
 ESCALATION_TIME = timedelta(hours=2)
+SLOW_RESPONSE_TIME = timedelta(minutes=int(getenv("SLOW_RESPONSE_TIME", '1')))
 BACKOFF_TIME = timedelta(hours=21)
 
 class User(object):
@@ -54,6 +56,8 @@ class User(object):
         # Task auto-escalation time
         self._escalation_time = datetime.max.replace(tzinfo=pytz.utc)
 
+        self._start = datetime.now(tz=pytz.utc)
+
         # Build state hierarchy
         states = ['need_task',
                   'action_performed_check',
@@ -66,7 +70,8 @@ class User(object):
             {
                 'source': 'need_task',
                 'dest': 'action_performed_check',
-                'condition': self._has_tasks
+                'condition': self._has_tasks,
+                'action': self._start_timer,
             },
             # Finish task if user says action was performed and recently authorized
             {
@@ -198,7 +203,8 @@ class User(object):
     def _slow_response_time(self):
         # type: () -> bool
         '''Returns true if the user has taken a long time to respond.'''
-        return datetime.now(tz=pytz.utc) > self._escalation_time
+        now = datetime.now(tz=pytz.utc)
+        return now - self._start > SLOW_RESPONSE_TIME
 
     def _allows_authorization(self):
         # type: () -> bool
@@ -217,6 +223,9 @@ class User(object):
 
     # State actions
 
+    def _start_timer(self):
+        self._start = datetime.now(tz=pytz.utc)
+
     def _auto_escalate(self):
         # type: () -> None
         '''Marks the current task as needing verification and moves on.'''
@@ -227,6 +236,7 @@ class User(object):
         self.pending_task.set_verifying()
         self._escalation_time = datetime.max.replace(tzinfo=pytz.utc)
         self.send_message('no_response')
+        self._act_on_not_performed()
 
     def _act_on_not_performed(self):
         # type: () -> None
@@ -250,11 +260,13 @@ class User(object):
                                                         comment=comment)
             msg_att += ',\n'
             msg_att +=  self.pending_task.attachments
+            # msg_att += '"' + self.pending_task.attachments +'"'
             msg_att += ',\n'
             msg_att += self.pending_task.reason
+            # msg_att +=  '"' + self.pending_task.reason + '"'
             msg_att  = '[ \n' + msg_att + '\n ]'
 
-            #print(msg_att)
+            logging.info(msg_att)
             msg_att_json = json.loads(msg_att)
             self.parent.chat.send_message(
                 self.parent.reporting_channel,

@@ -44,7 +44,7 @@ def clean_input(text):
     # smart quote, as happens with auto-formatting.
     text = (text.replace(u'\u2018', '\'')
                 .replace(u'\u2019', '\'')
-                .replace(u'\u201c','"')
+                .replace(u'\u201c', '"')
                 .replace(u'\u201d', '"'))
     # Undo autoformatting of dashes
     text = (text.replace(u'\u2013', '--')
@@ -331,13 +331,14 @@ class SecurityBot(object):
         #message = self.messages['alert'].format(task.description, reason)
         #message += '\n'
         #message += self.messages['action_prompt']
-        message ='';
+        message =''
         message_attachement = self.messages['alert']
         message_attachement += ',\n'
         message_attachement += task.attachments
         message_attachement += ',\n'
         message_attachement += self.messages['action_prompt']
         message_attachement = '[ \n' + message_attachement + '\n ]'
+        #logging.info(message_attachement)
         mjson = json.loads(message_attachement)
 
         self.chat.message_user(user, message, mjson)
@@ -356,6 +357,7 @@ class SecurityBot(object):
             user = User(member, self.auth_builder(member['name']), self)
             self.users[member['id']] = user
             self.users_by_name[member['name']] = user
+            #logging.info(member['name'])
         logging.info('Gathered info on {} users.'.format(len(self.users)))
 
     def user_lookup(self, id):
