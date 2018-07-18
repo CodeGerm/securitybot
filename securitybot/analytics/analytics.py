@@ -8,15 +8,14 @@ DASHBOARD_URL = BASE_URL + '/analytics/ui/#/dashboards'
 
 def list_insightlets():
 
-        url = BASE_URL + "/analytics/services/v1.0/preference/dashboards/library"
+        url = BASE_URL + "/analytics/services/v1.0/preference/dashboards/library/widgets/summaries"
         widgets = []
         req = Request(url)
         req.add_header("authorization", "Bearer " + TOKEN)
         resp = urlopen(req).read()
         jsons = json.loads(resp)
-        jsons = jsons['parcels']
         for i in range(len(jsons)):
-            widgets.append(jsons[i]['name'])
+            widgets.append(jsons[i]['parcel_name'])
         return  widgets
 
 def get_insightlet(name):
