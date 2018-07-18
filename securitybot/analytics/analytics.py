@@ -1,9 +1,9 @@
 from urllib2 import Request, urlopen, quote
 import json
-import logging
+from os import getenv
 
 BASE_URL = 'https://data-platform-pod0-dev.centrify.io'
-TOKEN = ""
+TOKEN = getenv('ANALYTICS_TOKEN')
 DASHBOARD_URL = BASE_URL + '/analytics/ui/#/dashboards'
 
 def list_insightlets():

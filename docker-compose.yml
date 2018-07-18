@@ -23,6 +23,7 @@ services:
       - DB_PASS=${DB_PASS}
       - DB_NAME=securitybot
       - SLOW_RESPONSE_TIME=${SLOW_RESPONSE_TIME}
+      - ANALYTICS_TOKEN=${ANALYTICS_TOKEN}
   frontend:
     build: .
     image: securitybot
